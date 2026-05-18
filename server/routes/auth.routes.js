@@ -95,25 +95,39 @@ router.post('/login', async (req, res) => {
 // POST /api/auth/google
 router.post('/google', async (req, res) => {
   try {
-    // Simulated Google Profile data
-    const email = 'google.user@example.com'
-    const name = 'Google User'
+    const { access_token } = req.body
     
+    if (!access_token) {
+      return res.status(400).json({ error: 'No access token provided' })
+    }
+
+    // Verify the access token by fetching user profile from Google
+    const googleRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` }
+    })
+    
+    if (!googleRes.ok) {
+      return res.status(401).json({ error: 'Invalid Google access token' })
+    }
+    
+    const payload = await googleRes.json()
+    const { email, name, picture, sub } = payload
+
     let user = await req.prisma.user.findUnique({ 
       where: { email },
       include: { goals: true }
     })
 
-    // If user doesn't exist, create a mock one
+    // If user doesn't exist, create a new one using Google profile
     if (!user) {
-      const hashedPassword = await bcrypt.hash('google-mock-password', 10)
+      const hashedPassword = await bcrypt.hash(`google-${sub}-${Date.now()}`, 10)
       user = await req.prisma.user.create({
         data: {
           email,
           name,
-          password: hashedPassword,
-          username: 'google_user',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=GoogleUser'
+          password: hashedPassword, // secure random hash for oauth users
+          username: `user_${sub.slice(0, 8)}`,
+          avatar: picture
         },
         include: { goals: true }
       })
@@ -124,8 +138,8 @@ router.post('/google', async (req, res) => {
     const { password: _, ...userWithoutPassword } = user
     res.json({ token, user: userWithoutPassword })
   } catch (error) {
-    console.error('Google Auth Error:', error)
-    res.status(500).json({ error: 'Failed to authenticate with Google' })
+    console.error('Google Auth Verification Error:', error)
+    res.status(500).json({ error: 'Failed to verify Google Token' })
   }
 })
 

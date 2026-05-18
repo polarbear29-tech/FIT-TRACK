@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff } from 'lucide-react'
 import { useAuthStore } from '@/store/useAuthStore'
+import { useGoogleLogin } from '@react-oauth/google'
 
 export function Step1({ defaultValues, onNext }) {
   const navigate = useNavigate()
@@ -45,14 +46,19 @@ export function Step1({ defaultValues, onNext }) {
     onNext(data)
   }
 
-  const handleGoogleAuth = async () => {
-    const success = await googleLogin()
-    if (success) {
-      navigate('/dashboard')
-    } else {
-      alert("Google login simulation failed.")
+  const handleGoogleAuth = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const success = await googleLogin(tokenResponse.access_token)
+      if (success) {
+        navigate('/dashboard')
+      } else {
+        alert("Google login verification failed on server.")
+      }
+    },
+    onError: () => {
+      alert("Google login popup failed.")
     }
-  }
+  })
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
