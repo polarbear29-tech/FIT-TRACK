@@ -48,11 +48,11 @@ export function Step1({ defaultValues, onNext }) {
 
   const handleGoogleAuth = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      const success = await googleLogin(tokenResponse.access_token)
-      if (success) {
+      const result = await googleLogin(tokenResponse.access_token)
+      if (result.success) {
         navigate('/dashboard')
       } else {
-        alert("Google login verification failed on server.")
+        alert("Google login verification failed: " + result.message)
       }
     },
     onError: () => {

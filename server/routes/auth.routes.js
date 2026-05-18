@@ -139,7 +139,7 @@ router.post('/google', async (req, res) => {
     res.json({ token, user: userWithoutPassword })
   } catch (error) {
     console.error('Google Auth Verification Error:', error)
-    res.status(500).json({ error: 'Failed to verify Google Token' })
+    res.status(500).json({ error: 'Failed to verify Google Token: ' + error.message })
   }
 })
 
