@@ -57,3 +57,13 @@ src/
 
 ## Live Demo
 *(Placeholder for Vercel deployment link)*
+
+## Component Documentation & Architecture
+
+FitTrack follows a feature-driven component architecture. Components are kept small, focused, and grouped by domain (`auth/`, `landing/`, `dashboard/`).
+
+### Reusable Patterns:
+1. **Design System Primitives**: All base UI elements (Buttons, Inputs, Cards) are centrally managed in `src/components/ui/` using Shadcn principles. They accept `className` props and merge styles using `tailwind-merge` (`cn` utility), ensuring they can be customized without breaking base styles.
+2. **State Management**: Complex multi-step state (Auth flow) and global UI state (Theme) are decoupled from components using Zustand stores (`useAuthStore`, `useThemeStore`). This prevents prop drilling.
+3. **Form Handling**: Real-time validation is standardized across the app using `react-hook-form` paired with Zod schemas defined in `src/lib/validations.js`.
+4. **Motion Wrapping**: Animation primitives from Framer Motion are encapsulated within components to maintain clean JSX. The `AnimatePresence` wrapper is used at the routing layer to enable smooth page transitions between major sections.
