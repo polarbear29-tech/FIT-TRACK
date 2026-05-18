@@ -17,15 +17,15 @@ export function Step5({ defaultValues, onNext, onBack }) {
 
   const { register, handleSubmit, watch, setValue, formState: { isValid } } = useForm({
     resolver: zodResolver(step5Schema),
-    defaultValues: defaultValues || {
-      username: '',
-      bio: '',
-      notifications: { workoutReminders: true, weeklyReports: true, tips: false }
+    defaultValues: {
+      username: defaultValues?.username || '',
+      bio: defaultValues?.bio || '',
+      notifications: defaultValues?.notifications || { workoutReminders: true, weeklyReports: true, tips: false }
     }
   })
 
-  const notifs = watch('notifications')
-  const bio = watch('bio', '')
+  const notifs = watch('notifications') || { workoutReminders: true, weeklyReports: true, tips: false }
+  const bio = watch('bio') || ''
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
@@ -103,7 +103,10 @@ export function Step5({ defaultValues, onNext, onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, (errors) => alert("Validation Failed: " + JSON.stringify(errors)))} className="space-y-6">
+      <input type="hidden" {...register('notifications.workoutReminders')} value={notifs?.workoutReminders || false} />
+      <input type="hidden" {...register('notifications.weeklyReports')} value={notifs?.weeklyReports || false} />
+      <input type="hidden" {...register('notifications.tips')} value={notifs?.tips || false} />
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold mb-2">Profile Setup</h2>
         <p className="text-neutral-500 text-sm">Last step! Personalize your public profile.</p>

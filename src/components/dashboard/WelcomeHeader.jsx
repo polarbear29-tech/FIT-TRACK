@@ -9,7 +9,7 @@ export function WelcomeHeader() {
 
   // Ensure there's a fallback name
   const name = user?.name || onboardingData?.username || 'Athlete'
-  const avatarUrl = onboardingData?.avatar
+  const avatarUrl = user?.avatar || onboardingData?.avatar
   const initial = name.charAt(0).toUpperCase()
 
   const today = new Date().toLocaleDateString('en-US', {

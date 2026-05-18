@@ -56,7 +56,22 @@ src/
    ```
 
 ## Live Demo
-*(Placeholder for Vercel deployment link)*
+*(Replace with your Vercel/Netlify link once deployed)*
+
+## Screenshots
+
+### Landing Page (Desktop)
+![Landing Desktop](./public/screenshots/landing-desktop.png)
+
+### Landing Page (Mobile)
+![Landing Mobile](./public/screenshots/landing-mobile.png)
+
+### Authentication Flow (Multi-step)
+![Auth Flow](./public/screenshots/auth-flow.png)
+
+### User Dashboard
+![Dashboard](./public/screenshots/dashboard.png)
+
 
 ## Component Documentation & Architecture
 

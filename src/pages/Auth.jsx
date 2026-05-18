@@ -25,15 +25,33 @@ export default function Auth() {
       // Final step complete
       const finalData = { ...onboardingData, ...data }
       
-      // We check if it's 'login' action or 'register'
-      // Since it's a 5-step flow, it's register
-      const { register } = useAuthStore.getState()
-      const success = await register(finalData)
+      const formattedData = {
+        email: finalData.email,
+        password: finalData.password,
+        name: finalData.fullName,
+        dateOfBirth: finalData.dob,
+        gender: finalData.gender,
+        height: finalData.height,
+        heightUnit: finalData.heightUnit,
+        weight: finalData.weight,
+        weightUnit: finalData.weightUnit,
+        goals: finalData.goals,
+        activity: finalData.activityLevel,
+        username: finalData.username,
+        bio: finalData.bio,
+        avatar: finalData.avatar,
+        workoutReminders: finalData.notifications?.workoutReminders,
+        weeklyReports: finalData.notifications?.weeklyReports,
+        tipsAndTricks: finalData.notifications?.tips
+      }
       
-      if (success) {
+      const { register } = useAuthStore.getState()
+      const result = await register(formattedData)
+      
+      if (result.success) {
         navigate('/dashboard')
       } else {
-        alert('Registration failed. Please try again.')
+        alert('Registration failed: ' + result.message)
       }
     }
   }

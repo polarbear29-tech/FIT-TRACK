@@ -15,12 +15,12 @@ const activityLevels = [
 ]
 
 export function Step4({ defaultValues, onNext, onBack }) {
-  const { handleSubmit, watch, setValue } = useForm({
+  const { register, handleSubmit, watch, setValue } = useForm({
     resolver: zodResolver(step4Schema),
-    defaultValues: defaultValues || { activityLevel: '' }
+    defaultValues: { activityLevel: defaultValues?.activityLevel || '' }
   })
 
-  const selected = watch('activityLevel')
+  const selected = watch('activityLevel') || ''
 
   const onSubmit = (data) => {
     onNext(data)
@@ -31,19 +31,18 @@ export function Step4({ defaultValues, onNext, onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 flex flex-col min-h-full">
+    <form onSubmit={handleSubmit(onSubmit, (errors) => alert("Validation Failed: " + JSON.stringify(errors)))} className="space-y-6 flex flex-col min-h-full">
+      <input type="hidden" {...register('activityLevel')} value={selected || ''} />
       <div className="text-center mb-6 shrink-0">
         <h2 className="text-2xl font-bold mb-2">Activity Level</h2>
         <p className="text-neutral-500 text-sm">How active are you right now?</p>
       </div>
 
-      <LayoutGroup>
         <div className="space-y-3 flex-1 overflow-y-auto pr-2 pb-2">
           {activityLevels.map((level) => {
             const isSelected = selected === level.id
             return (
               <motion.div
-                layout
                 key={level.id}
                 onClick={() => setValue('activityLevel', level.id)}
                 className={`relative cursor-pointer flex items-center gap-4 p-4 rounded-xl border transition-all ${
@@ -53,8 +52,7 @@ export function Step4({ defaultValues, onNext, onBack }) {
                 }`}
               >
                 {isSelected && (
-                  <motion.div 
-                    layoutId="activeIndicator"
+                  <div 
                     className="absolute left-0 top-0 bottom-0 w-1.5 bg-brand-500 rounded-l-xl"
                   />
                 )}
@@ -81,12 +79,11 @@ export function Step4({ defaultValues, onNext, onBack }) {
             )
           })}
         </div>
-      </LayoutGroup>
 
       <div className="pt-4 shrink-0 space-y-4">
         <div className="flex justify-between gap-4">
           <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
-          <Button type="submit" disabled={!selected} className="flex-1">Continue</Button>
+          <Button type="submit" className="flex-1">Continue</Button>
         </div>
         <div className="text-center">
           <button type="button" onClick={handleSkip} className="text-sm text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 underline underline-offset-4">

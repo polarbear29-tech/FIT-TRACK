@@ -2,22 +2,13 @@ import React from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useThemeStore } from '@/store/useThemeStore'
-
-const data = [
-  { day: 'Mon', value: 45 },
-  { day: 'Tue', value: 30 },
-  { day: 'Wed', value: 60 },
-  { day: 'Thu', value: 0 },
-  { day: 'Fri', value: 50 },
-  { day: 'Sat', value: 90 },
-  { day: 'Sun', value: 40 },
-]
+import { useDashboardStore } from '@/store/useDashboardStore'
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-neutral-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl">
-        {`${payload[0].value} min`}
+        {`${payload[0].value} kcal`}
       </div>
     )
   }
@@ -26,7 +17,19 @@ const CustomTooltip = ({ active, payload }) => {
 
 export function ActivityChart() {
   const { theme } = useThemeStore()
+  const { stats } = useDashboardStore()
   const isDark = theme === 'dark'
+  
+  // Use real stats if available, otherwise empty skeleton
+  const chartData = stats?.weeklyActivity || [
+    { name: 'Mon', value: 0 },
+    { name: 'Tue', value: 0 },
+    { name: 'Wed', value: 0 },
+    { name: 'Thu', value: 0 },
+    { name: 'Fri', value: 0 },
+    { name: 'Sat', value: 0 },
+    { name: 'Sun', value: 0 },
+  ]
 
   return (
     <Card className="h-full">
@@ -35,9 +38,9 @@ export function ActivityChart() {
       </CardHeader>
       <CardContent className="h-[250px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <XAxis 
-              dataKey="day" 
+              dataKey="name" 
               axisLine={false} 
               tickLine={false} 
               tick={{ fontSize: 12, fill: isDark ? '#94a3b8' : '#64748b' }} 
@@ -50,7 +53,7 @@ export function ActivityChart() {
             />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: isDark ? '#1e293b' : '#f1f5f9', radius: 4 }} />
             <Bar dataKey="value" radius={[4, 4, 4, 4]}>
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={entry.value === 0 ? (isDark ? '#334155' : '#e2e8f0') : '#14b8a6'} 
