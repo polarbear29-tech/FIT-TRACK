@@ -1,13 +1,17 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { step1Schema } from '@/lib/validations'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff } from 'lucide-react'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export function Step1({ defaultValues, onNext }) {
+  const navigate = useNavigate()
+  const { googleLogin } = useAuthStore()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
 
@@ -41,6 +45,15 @@ export function Step1({ defaultValues, onNext }) {
     onNext(data)
   }
 
+  const handleGoogleAuth = async () => {
+    const success = await googleLogin()
+    if (success) {
+      navigate('/dashboard')
+    } else {
+      alert("Google login simulation failed.")
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="text-center mb-8">
@@ -48,7 +61,7 @@ export function Step1({ defaultValues, onNext }) {
         <p className="text-neutral-500 text-sm">Let's get started with your basic details.</p>
       </div>
 
-      <Button type="button" variant="outline" className="w-full relative overflow-hidden group">
+      <Button type="button" variant="outline" className="w-full relative overflow-hidden group" onClick={handleGoogleAuth}>
         <div className="absolute inset-0 bg-neutral-100 dark:bg-neutral-800 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
         <svg className="w-5 h-5 mr-2 relative z-10" viewBox="0 0 24 24">
           <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

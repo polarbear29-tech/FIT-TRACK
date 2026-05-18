@@ -53,6 +53,25 @@ export const useAuthStore = create((set) => ({
     }
   },
 
+  googleLogin: async () => {
+    set({ isLoading: true })
+    try {
+      const res = await fetch('/api/auth/google', {
+        method: 'POST'
+      })
+      if (!res.ok) throw new Error('Google Login failed')
+      
+      const data = await res.json()
+      localStorage.setItem('fittrack_token', data.token)
+      set({ user: data.user, token: data.token, isAuthenticated: true, isLoading: false })
+      return true
+    } catch (err) {
+      console.error(err)
+      set({ isLoading: false })
+      return false
+    }
+  },
+
   checkAuth: async () => {
     const token = localStorage.getItem('fittrack_token')
     if (!token) return set({ isAuthenticated: false, user: null })
