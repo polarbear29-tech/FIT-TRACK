@@ -58,6 +58,16 @@ src/
 ## Live Demo
 [https://fit-track-gru4.vercel.app/](https://fit-track-gru4.vercel.app/)
 
+## Screenshots
+
+### Landing Page
+![Landing Desktop](./public/screenshots/landing-desktop.png)
+
+### Authentication Flow (Multi-step)
+![Auth Flow](./public/screenshots/auth-flow.png)
+
+### User Dashboard
+![Dashboard](./public/screenshots/dashboard.png)
 
 
 ## Component Documentation & Architecture
