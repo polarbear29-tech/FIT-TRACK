@@ -13,13 +13,11 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  // Profile Information
   name        String?
   username    String?
   avatar      String?
   bio         String?
 
-  // Metrics
   dateOfBirth DateTime?
   gender      String?
   height      Float?
@@ -28,10 +26,10 @@ model User {
   weightUnit  String?
   activity    String?
 
-  // Goals
   goals       Goal[]
+  workouts    Workout[]
+  meals       MealLog[]
   
-  // Settings
   workoutReminders Boolean @default(true)
   weeklyReports    Boolean @default(true)
   tipsAndTricks    Boolean @default(false)
@@ -41,4 +39,27 @@ model Goal {
   id    String @id @default(uuid())
   name  String @unique
   users User[]
+}
+
+model Workout {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  duration  Int      // in minutes
+  calories  Int
+  completed Boolean  @default(true)
+  date      DateTime @default(now())
+}
+
+model MealLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  name      String
+  calories  Int
+  protein   Int?
+  carbs     Int?
+  fat       Int?
+  date      DateTime @default(now())
 }

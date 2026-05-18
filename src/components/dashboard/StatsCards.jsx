@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Flame, Dumbbell, CalendarDays, Target } from 'lucide-react'
+import { Flame, Activity, Trophy, Target } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-
-const statsData = [
-  { title: 'Calories Burned', value: '1,240', unit: 'kcal', icon: Flame, trend: '+12%', isPositive: true },
-  { title: 'Workouts This Week', value: '4', unit: '/ 7', icon: Dumbbell, trend: '+1', isPositive: true },
-  { title: 'Streak Days', value: '12', unit: 'days', icon: CalendarDays, trend: 'Personal best!', isPositive: true, special: '🔥' },
-  { title: 'Goal Progress', value: '68', unit: '%', icon: Target, trend: '+5%', isPositive: true },
-]
+import { useDashboardStore } from '@/store/useDashboardStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export function StatsCards() {
-  const [isLoading, setIsLoading] = useState(true)
+  const { stats, fetchStats, isLoading } = useDashboardStore()
+  const { token } = useAuthStore()
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1200)
-    return () => clearTimeout(timer)
-  }, [])
+    fetchStats(token)
+  }, [fetchStats, token])
+
+  const statsData = [
+    { title: 'Calories Burned', value: stats ? stats.caloriesBurned : '0', unit: 'kcal', icon: Flame, trend: '+12%', isPositive: true },
+    { title: 'Workouts Logged', value: stats ? stats.workoutsCount : '0', unit: 'sessions', icon: Activity, trend: '+2', isPositive: true },
+    { title: 'Streak Days', value: stats ? stats.streak : '0', unit: 'days', icon: Trophy, trend: 'Personal best!', isPositive: true, special: '🔥' },
+    { title: 'Goal Progress', value: '68', unit: '%', icon: Target, trend: '+5%', isPositive: true },
+  ]
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

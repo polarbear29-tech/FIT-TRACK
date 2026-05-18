@@ -1,10 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowRight, Play, Activity } from 'lucide-react'
+import { motion, useMotionValue } from 'framer-motion'
+import { ArrowRight, Activity } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from 'react-i18next'
 
 export function Hero() {
+  const { t, i18n } = useTranslation()
+  const mouseX = useMotionValue(0)
+
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-mesh">
       <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
@@ -16,26 +20,25 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
+            {/* Language Toggle */}
+            <div className="flex gap-2 justify-center lg:justify-start mb-6">
+              <button onClick={() => i18n.changeLanguage('en')} className={`text-xs px-2 py-1 rounded ${i18n.language === 'en' ? 'bg-brand-500 text-white' : 'bg-neutral-200 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'}`}>EN</button>
+              <button onClick={() => i18n.changeLanguage('es')} className={`text-xs px-2 py-1 rounded ${i18n.language === 'es' ? 'bg-brand-500 text-white' : 'bg-neutral-200 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'}`}>ES</button>
+            </div>
+
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-black leading-[1.1] tracking-tight mb-6 text-neutral-900 dark:text-white">
-              Unlock Your <br className="hidden lg:block" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-coreAccent">
-                Peak Potential
-              </span>
+              {t('heroTitle')}
             </h1>
             <p className="text-lg md:text-xl text-neutral-500 dark:text-neutral-400 max-w-lg mx-auto lg:mx-0 mb-8">
-              The premium fitness platform that adapts to your body, tracks your progress in real-time, and builds the perfect routine for your goals.
+              {t('heroSubtitle')}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
               <Button size="lg" className="w-full sm:w-auto group" asChild>
                 <Link to="/auth">
-                  Get Started
+                  {t('getStarted')}
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-              </Button>
-              <Button size="lg" variant="ghost" className="w-full sm:w-auto">
-                <Play className="mr-2 w-4 h-4 text-brand-500" />
-                Watch Demo
               </Button>
             </div>
             

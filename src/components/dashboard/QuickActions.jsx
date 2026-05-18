@@ -1,28 +1,63 @@
 import React from 'react'
 import { Play, Utensils, TrendingUp } from 'lucide-react'
 import { motion } from 'framer-motion'
-
-const actions = [
-  { label: 'Start Workout', icon: Play, color: 'bg-brand-500 text-white', hover: 'hover:bg-brand-600' },
-  { label: 'Log Meal', icon: Utensils, color: 'bg-orange-500 text-white', hover: 'hover:bg-orange-600' },
-  { label: 'View Progress', icon: TrendingUp, color: 'bg-blue-500 text-white', hover: 'hover:bg-blue-600' },
-]
+import { useDashboardStore } from '@/store/useDashboardStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export function QuickActions() {
+  const { logWorkout, logMeal } = useDashboardStore()
+  const { token } = useAuthStore()
+
+  const handleStartWorkout = async () => {
+    // Simulate logging a 30m HIIT workout
+    await logWorkout({
+      name: 'HIIT Session',
+      duration: 30,
+      calories: 320
+    }, token)
+  }
+
+  const handleLogMeal = async () => {
+    // Simulate logging a meal
+    await logMeal({
+      name: 'Protein Shake',
+      calories: 250,
+      protein: 30,
+      carbs: 10,
+      fat: 5
+    }, token)
+  }
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-8">
-      {actions.map((action, idx) => (
-        <motion.button
-          key={idx}
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-full font-semibold shadow-md transition-colors ${action.color} ${action.hover}`}
-          aria-label={action.label}
-        >
-          <action.icon className="w-4 h-4" />
-          {action.label}
-        </motion.button>
-      ))}
+      <motion.button
+        onClick={handleStartWorkout}
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-full font-semibold shadow-md transition-colors bg-brand-500 text-white hover:bg-brand-600`}
+      >
+        <Play className="w-4 h-4" />
+        Start Workout
+      </motion.button>
+      
+      <motion.button
+        onClick={handleLogMeal}
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-full font-semibold shadow-md transition-colors bg-orange-500 text-white hover:bg-orange-600`}
+      >
+        <Utensils className="w-4 h-4" />
+        Log Meal
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.02, y: -2 }}
+        whileTap={{ scale: 0.98 }}
+        className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-full font-semibold shadow-md transition-colors bg-blue-500 text-white hover:bg-blue-600`}
+      >
+        <TrendingUp className="w-4 h-4" />
+        View Progress
+      </motion.button>
     </div>
   )
 }
