@@ -53,11 +53,15 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  googleLogin: async () => {
+  googleLogin: async (access_token) => {
     set({ isLoading: true })
     try {
       const res = await fetch('/api/auth/google', {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ access_token })
       })
       if (!res.ok) throw new Error('Google Login failed')
       
