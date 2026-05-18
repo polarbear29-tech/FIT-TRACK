@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 
+const API_URL = import.meta.env.PROD 
+  ? 'https://fit-track-76cb.onrender.com/api' 
+  : '/api'
+
 export const useDashboardStore = create((set) => ({
   stats: null,
   isLoading: false,
@@ -8,7 +12,7 @@ export const useDashboardStore = create((set) => ({
     if (!token) return
     set({ isLoading: true })
     try {
-      const res = await fetch('/api/dashboard/stats', {
+      const res = await fetch(`${API_URL}/dashboard/stats`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (res.ok) {
@@ -24,7 +28,7 @@ export const useDashboardStore = create((set) => ({
 
   logWorkout: async (workoutData, token) => {
     try {
-      const res = await fetch('/api/dashboard/workout', {
+      const res = await fetch(`${API_URL}/dashboard/workout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +49,7 @@ export const useDashboardStore = create((set) => ({
 
   logMeal: async (mealData, token) => {
     try {
-      const res = await fetch('/api/dashboard/meal', {
+      const res = await fetch(`${API_URL}/dashboard/meal`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 
+const API_URL = import.meta.env.PROD 
+  ? 'https://fit-track-76cb.onrender.com/api' 
+  : '/api'
+
 export const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
@@ -14,20 +18,7 @@ export const useAuthStore = create((set) => ({
   login: async (credentials) => {
     set({ isLoading: true })
     try {
-      if (import.meta.env.PROD) {
-        // Mock successful login for Vercel deployment (no backend)
-        const mockToken = 'mock_jwt_token_for_demo'
-        localStorage.setItem('fittrack_token', mockToken)
-        set({ 
-          user: { id: '1', email: credentials.email, name: 'Demo User', goals: [] }, 
-          token: mockToken, 
-          isAuthenticated: true, 
-          isLoading: false 
-        })
-        return true
-      }
-
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials)
@@ -48,20 +39,7 @@ export const useAuthStore = create((set) => ({
   register: async (onboardingData) => {
     set({ isLoading: true })
     try {
-      if (import.meta.env.PROD) {
-        // Mock successful registration for Vercel deployment
-        const mockToken = 'mock_jwt_token_for_demo'
-        localStorage.setItem('fittrack_token', mockToken)
-        set({ 
-          user: { id: '1', email: onboardingData.email, name: onboardingData.name || 'Demo User', goals: [] }, 
-          token: mockToken, 
-          isAuthenticated: true, 
-          isLoading: false 
-        })
-        return { success: true }
-      }
-
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(onboardingData)
@@ -85,20 +63,7 @@ export const useAuthStore = create((set) => ({
   googleLogin: async (access_token) => {
     set({ isLoading: true })
     try {
-      if (import.meta.env.PROD) {
-        // Mock successful Google Login for Vercel deployment
-        const mockToken = 'mock_google_jwt_token'
-        localStorage.setItem('fittrack_token', mockToken)
-        set({ 
-          user: { id: '2', email: 'googleuser@example.com', name: 'Google Athlete', goals: [] }, 
-          token: mockToken, 
-          isAuthenticated: true, 
-          isLoading: false 
-        })
-        return true
-      }
-
-      const res = await fetch('/api/auth/google', {
+      const res = await fetch(`${API_URL}/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -123,15 +88,7 @@ export const useAuthStore = create((set) => ({
     if (!token) return set({ isAuthenticated: false, user: null })
     
     try {
-      if (import.meta.env.PROD) {
-        // Mock checkAuth for Vercel
-        return set({ 
-          user: { id: '1', email: 'demo@example.com', name: 'Demo User', goals: [] }, 
-          isAuthenticated: true 
-        })
-      }
-
-      const res = await fetch('/api/user/me', {
+      const res = await fetch(`${API_URL}/user/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       if (!res.ok) throw new Error('Token invalid')
