@@ -16,15 +16,25 @@ export default function Auth() {
   const navigate = useNavigate()
   const { updateOnboardingData, onboardingData, login } = useAuthStore()
 
-  const handleNext = (data) => {
+  const handleNext = async (data) => {
     updateOnboardingData(data)
     if (step < 5) {
       setDirection(1)
       setStep(s => s + 1)
     } else {
       // Final step complete
-      login({ name: data.username || onboardingData.fullName, email: onboardingData.email })
-      navigate('/dashboard')
+      const finalData = { ...onboardingData, ...data }
+      
+      // We check if it's 'login' action or 'register'
+      // Since it's a 5-step flow, it's register
+      const { register } = useAuthStore.getState()
+      const success = await register(finalData)
+      
+      if (success) {
+        navigate('/dashboard')
+      } else {
+        alert('Registration failed. Please try again.')
+      }
     }
   }
 
