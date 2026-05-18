@@ -56,7 +56,7 @@ src/
    ```
 
 ## Live Demo
-*(Replace with your Vercel/Netlify link once deployed)*
+[https://fit-track-gru4.vercel.app/](https://fit-track-gru4.vercel.app/)
 
 ## Screenshots
 
