@@ -10,13 +10,13 @@ export function Step2({ defaultValues, onNext, onBack }) {
   const { register, handleSubmit, control, watch, setValue, formState: { errors, isValid } } = useForm({
     resolver: zodResolver(step2Schema),
     mode: 'onChange',
-    defaultValues: defaultValues || {
-      dob: '',
-      gender: undefined,
-      height: 170,
-      heightUnit: 'cm',
-      weight: 70,
-      weightUnit: 'kg'
+    defaultValues: {
+      dob: defaultValues?.dob || '',
+      gender: defaultValues?.gender || undefined,
+      height: defaultValues?.height || 170,
+      heightUnit: defaultValues?.heightUnit || 'cm',
+      weight: defaultValues?.weight || 70,
+      weightUnit: defaultValues?.weightUnit || 'kg'
     }
   })
 
@@ -61,7 +61,12 @@ export function Step2({ defaultValues, onNext, onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, (errors) => alert("Validation Failed: " + JSON.stringify(errors)))} className="space-y-6">
+      {/* Hidden inputs must have bound values or they submit empty strings! */}
+      <input type="hidden" {...register('gender')} value={gender || ''} />
+      <input type="hidden" {...register('heightUnit')} value={hUnit || 'cm'} />
+      <input type="hidden" {...register('weightUnit')} value={wUnit || 'kg'} />
+
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">Personal Details</h2>
         <p className="text-neutral-500 text-sm">Help us tailor your experience.</p>
@@ -127,7 +132,7 @@ export function Step2({ defaultValues, onNext, onBack }) {
 
       <div className="pt-4 flex justify-between gap-4">
         <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
-        <Button type="submit" disabled={!isValid} className="flex-1">Continue</Button>
+        <Button type="submit" className="flex-1">Continue</Button>
       </div>
     </form>
   )

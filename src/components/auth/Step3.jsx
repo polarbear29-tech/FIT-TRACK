@@ -16,12 +16,12 @@ const allGoals = [
 ]
 
 export function Step3({ defaultValues, onNext, onBack }) {
-  const { handleSubmit, watch, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm({
     resolver: zodResolver(step3Schema),
-    defaultValues: defaultValues || { goals: [] }
+    defaultValues: { goals: defaultValues?.goals || [] }
   })
 
-  const goals = watch('goals')
+  const goals = watch('goals') || []
   const isValid = goals.length > 0 && goals.length <= 3
 
   const toggleGoal = (id) => {
@@ -37,7 +37,8 @@ export function Step3({ defaultValues, onNext, onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit, (errors) => alert("Validation Failed: " + JSON.stringify(errors)))} className="space-y-6">
+      <input type="hidden" {...register('goals')} value={goals || []} />
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold mb-2">Fitness Goals</h2>
         <p className="text-neutral-500 text-sm">Select up to 3 goals you want to achieve.</p>
@@ -92,7 +93,7 @@ export function Step3({ defaultValues, onNext, onBack }) {
 
       <div className="pt-4 flex justify-between gap-4">
         <Button type="button" variant="ghost" onClick={onBack}>Back</Button>
-        <Button type="submit" disabled={!isValid} className="flex-1">Continue</Button>
+        <Button type="submit" className="flex-1">Continue</Button>
       </div>
     </form>
   )

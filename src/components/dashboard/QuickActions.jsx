@@ -1,6 +1,7 @@
 import React from 'react'
 import { Play, Utensils, TrendingUp } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { toast } from 'sonner'
 import { useDashboardStore } from '@/store/useDashboardStore'
 import { useAuthStore } from '@/store/useAuthStore'
 
@@ -9,23 +10,25 @@ export function QuickActions() {
   const { token } = useAuthStore()
 
   const handleStartWorkout = async () => {
-    // Simulate logging a 30m HIIT workout
-    await logWorkout({
-      name: 'HIIT Session',
-      duration: 30,
-      calories: 320
-    }, token)
+    toast.promise(
+      logWorkout({ name: 'HIIT Session', duration: 30, calories: 320 }, token),
+      {
+        loading: 'Logging workout...',
+        success: '🔥 320 kcal HIIT workout logged!',
+        error: 'Failed to log workout'
+      }
+    )
   }
 
   const handleLogMeal = async () => {
-    // Simulate logging a meal
-    await logMeal({
-      name: 'Protein Shake',
-      calories: 250,
-      protein: 30,
-      carbs: 10,
-      fat: 5
-    }, token)
+    toast.promise(
+      logMeal({ name: 'Protein Shake', calories: 250, protein: 30, carbs: 10, fat: 5 }, token),
+      {
+        loading: 'Logging meal...',
+        success: '🥗 Protein Shake (250 kcal) logged!',
+        error: 'Failed to log meal'
+      }
+    )
   }
 
   return (

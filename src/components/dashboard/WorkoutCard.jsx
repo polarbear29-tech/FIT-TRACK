@@ -4,6 +4,9 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Play, Clock } from 'lucide-react'
+import { toast } from 'sonner'
+import { useDashboardStore } from '@/store/useDashboardStore'
+import { useAuthStore } from '@/store/useAuthStore'
 
 const initialExercises = [
   { id: 1, name: 'Warm-up: Dynamic Stretching', duration: '5 min', completed: true },
@@ -16,11 +19,24 @@ const initialExercises = [
 
 export function WorkoutCard() {
   const [exercises, setExercises] = useState(initialExercises)
+  const { logWorkout } = useDashboardStore()
+  const { token } = useAuthStore()
 
   const toggleExercise = (id) => {
     setExercises(exercises.map(ex => 
       ex.id === id ? { ...ex, completed: !ex.completed } : ex
     ))
+  }
+
+  const handleComplete = () => {
+    toast.promise(
+      logWorkout({ name: 'Lower Body Power', duration: 45, calories: 450 }, token),
+      {
+        loading: 'Logging session...',
+        success: '🎉 Lower Body Power completed! (+450 kcal)',
+        error: 'Failed to log session'
+      }
+    )
   }
 
   const completedCount = exercises.filter(ex => ex.completed).length
@@ -81,7 +97,10 @@ export function WorkoutCard() {
       </CardContent>
 
       <CardFooter className="pt-4 border-t">
-        <Button className="w-full shadow-lg group">
+        <Button 
+          className="w-full shadow-lg group"
+          onClick={completedCount === totalCount ? handleComplete : undefined}
+        >
           <Play className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
           {completedCount === 0 ? 'Start Workout' : completedCount === totalCount ? 'Workout Complete!' : 'Resume Workout'}
         </Button>

@@ -17,11 +17,29 @@ router.get('/stats', authMiddleware, async (req, res) => {
     const totalWorkouts = workouts.length
     const totalCaloriesEaten = meals.reduce((sum, m) => sum + m.calories, 0)
 
+    // Calculate weekly activity array
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    const weeklyActivity = days.map(day => ({ name: day, value: 0 }))
+    
+    // Group recent workouts by day (mock logic for the assessment)
+    workouts.forEach(w => {
+      const date = new Date(w.date)
+      const dayName = days[date.getDay()]
+      const dayIndex = weeklyActivity.findIndex(d => d.name === dayName)
+      if (dayIndex !== -1) {
+        weeklyActivity[dayIndex].value += w.calories
+      }
+    })
+
+    // Shift array to start from Monday for better UI
+    const shiftedActivity = [...weeklyActivity.slice(1), weeklyActivity[0]]
+
     res.json({
       caloriesBurned: totalCaloriesBurned,
       caloriesEaten: totalCaloriesEaten,
       workoutsCount: totalWorkouts,
-      streak: 3 // mock streak for now
+      streak: 3, // mock streak for now
+      weeklyActivity: shiftedActivity
     })
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch stats' })

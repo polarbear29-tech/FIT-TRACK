@@ -4,10 +4,10 @@ import { LayoutDashboard, Dumbbell, Calendar, Target, Settings } from 'lucide-re
 
 const navItems = [
   { name: 'Home', icon: LayoutDashboard, path: '/dashboard' },
-  { name: 'Workouts', icon: Dumbbell, path: '/workouts' },
-  { name: 'Schedule', icon: Calendar, path: '/schedule' },
-  { name: 'Goals', icon: Target, path: '/goals' },
-  { name: 'Settings', icon: Settings, path: '/settings' },
+  { name: 'Workouts', icon: Dumbbell, path: '/dashboard/workouts' },
+  { name: 'Schedule', icon: Calendar, path: '/dashboard/schedule' },
+  { name: 'Goals', icon: Target, path: '/dashboard/goals' },
+  { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
 ]
 
 export function MobileNav() {
@@ -17,7 +17,7 @@ export function MobileNav() {
     <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-800 z-50 pb-safe">
       <nav className="flex items-center justify-around p-2">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path
+          const isActive = location.pathname === item.path || (location.pathname === '/dashboard' && item.path === '/dashboard')
           return (
             <Link
               key={item.name}
