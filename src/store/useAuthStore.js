@@ -70,16 +70,19 @@ export const useAuthStore = create((set) => ({
         },
         body: JSON.stringify({ access_token })
       })
-      if (!res.ok) throw new Error('Google Login failed')
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Google Login failed')
+      }
       
       const data = await res.json()
       localStorage.setItem('fittrack_token', data.token)
       set({ user: data.user, token: data.token, isAuthenticated: true, isLoading: false })
-      return true
+      return { success: true }
     } catch (err) {
       console.error(err)
       set({ isLoading: false })
-      return false
+      return { success: false, message: err.message }
     }
   },
 
