@@ -68,6 +68,8 @@ src/
 
 ### User Dashboard
 ![Dashboard](./public/screenshots/dashboard.png)
+<img width="1452" height="743" alt="Screenshot 2026-06-07 at 5 15 48 PM" src="https://github.com/user-attachments/assets/ff2e452f-01ca-4941-a88d-31d21eee2a4c" />
+
 
 
 ## Component Documentation & Architecture
